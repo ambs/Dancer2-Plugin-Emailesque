@@ -4,9 +4,12 @@ use 5.006;
 use strict;
 use warnings FATAL => 'all';
 
+use Dancer2::Plugin;
+use Emailesque;
+
 =head1 NAME
 
-Dancer2::Plugin::Emailesque - The great new Dancer2::Plugin::Emailesque!
+Dancer2::Plugin::Emailesque - Simple Emailesque support for Dancer2
 
 =head1 VERSION
 
@@ -16,38 +19,57 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+Configure your global mailer settings in your config file:
 
-Perhaps a little code snippet.
+  plugins:
+    Emailesque:
+      from: me@gmail.com
+      # for gmail...
+      ssl: 1
+      driver: smtp
+      host: smtp.googlemail.com
+      port: 465
+      user: account@gmail.com
+      pass: TheMightyPass
+
+In your module
 
     use Dancer2::Plugin::Emailesque;
 
-    my $foo = Dancer2::Plugin::Emailesque->new();
-    ...
+And when you need to mail someone:
 
-=head1 EXPORT
+    email { to => $email_recipient,
+            subject => "Your daily mail",
+            message => "The mail contents" };
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
+For further configuration or email construction check Emailesque
+documentation.
 
 =cut
 
-sub function1 {
+my $emailesque;
+
+sub _create_emailesque {
+    my $settings = plugin_setting;
+    $emailesque = Emailesque->new( $settings );
 }
 
-=head2 function2
+on_plugin_import {
+    _create_emailesque unless $emailesque;
+};
 
-=cut
+register email => sub {
+    my $dsl = shift;
+    my $options = shift || {};
 
-sub function2 {
-}
+    _create_emailesque unless $emailesque;
+
+    $emailesque->send($options);
+};
+
+register_plugin;
 
 =head1 AUTHOR
 
@@ -55,49 +77,13 @@ Alberto Simoes, C<< <ambs at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-dancer2-plugin-emailesque at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Dancer2-Plugin-Emailesque>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Dancer2::Plugin::Emailesque
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker (report bugs here)
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Dancer2-Plugin-Emailesque>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Dancer2-Plugin-Emailesque>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Dancer2-Plugin-Emailesque>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Dancer2-Plugin-Emailesque/>
-
-=back
-
+To report any bugs or feature requests access https://github.com/ambs/Dancer2-Plugin-Emailesque
 
 =head1 ACKNOWLEDGEMENTS
 
+IronCamel for the first Dancer::Plugin::Email module, AlNewKirk for Emailesque.
 
 =head1 LICENSE AND COPYRIGHT
-
-Copyright 2013 Alberto Simoes.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
