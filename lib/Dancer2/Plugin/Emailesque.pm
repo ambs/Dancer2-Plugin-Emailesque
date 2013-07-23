@@ -5,7 +5,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Dancer2::Plugin;
-use Emailesque;
+use Emailesque ('!email');
 
 =head1 NAME
 
