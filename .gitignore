@@ -1,7 +1,6 @@
 blib/
 .build/
 _build/
-cover_db/
 inc/
 Build
 !Build/
@@ -14,3 +13,14 @@ META.yml
 MYMETA.yml
 nytprof.out
 pm_to_blib
+Build.bat
+META.*
+MYMETA.*
+cover_db/
+.lwpcookies
+.last_cover_stats
+nytprof.out
+pod2htm*.tmp
+pm_to_blib
+Dancer2-Plugin-Emailesque-*
+Dancer2-Plugin-Emailesque-*.tar.gz
