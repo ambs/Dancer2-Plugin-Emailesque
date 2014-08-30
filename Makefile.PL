@@ -19,7 +19,7 @@ WriteMakefile
                       'Test::More' => 0,
                      },
    PREREQ_PM => {
-                 'Dancer2'     => '0.05',
+                 'Dancer2'     => '0.150000',
                  'Emailesque'  => '1.200007',
                 },
    dist       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

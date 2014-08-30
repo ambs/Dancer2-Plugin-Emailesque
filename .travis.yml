@@ -19,6 +19,7 @@ notifications:
     use_notice: true
 
 install:
+    - cpanm --installdeps .   || { cat ~/.cpanm/build.log ; false ; }
     - cpanm .                 || { cat ~/.cpanm/build.log ; false ; }
 
 script:
